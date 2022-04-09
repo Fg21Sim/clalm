@@ -40,31 +40,31 @@ def alm_getlmmax(a, lmax, mmax):
 
 
 @cython.cdivision(True)
-cdef inline int alm_getlmax(int s):
+cdef inline long alm_getlmax(long s):
     cdef double x
     x=(-3+np.sqrt(1.+8.*s))/2
     if x != floor(x):
         return -1
     else:
-        return <int>floor(x)
+        return <long>floor(x)
 
 
 @cython.cdivision(True)
-cdef inline int alm_getlmax2(int s, int mmax):
+cdef inline long alm_getlmax2(long s, long mmax):
     cdef double x
     x = (2 * s + mmax ** 2 - mmax - 2.) / (2 * mmax + 2.)
     if x != floor(x):
         return -1
     else:
-        return <int>floor(x)
+        return <long>floor(x)
 
 
 @cython.cdivision(True)
-cdef inline int alm_getidx(int lmax, int l, int m):
+cdef inline long alm_getidx(long lmax, long l, long m):
     return m*(2*lmax+1-m)/2+l
 
 def alm2cl(alms, alms2 = None, lmax = None, mmax = None, lmax_out = None):
-    cdef int Nspec, Nspec2
+    cdef long Nspec, Nspec2
     if not hasattr(alms, '__len__'):
         raise ValueError('alms must be an array or a sequence of arrays')
     if not hasattr(alms[0], '__len__'):
@@ -90,7 +90,7 @@ def alm2cl(alms, alms2 = None, lmax = None, mmax = None, lmax_out = None):
     ##############################################
     # Check sizes of alm's and lmax/mmax/lmax_out
     #
-    cdef int almsize
+    cdef long almsize
     almsize = alms[0].size
     for i in xrange(Nspec):
         if alms[i].size != almsize or alms2[i].size != almsize:
@@ -105,9 +105,9 @@ def alm2cl(alms, alms2 = None, lmax = None, mmax = None, lmax_out = None):
     #######################
     # Computing the spectra
     #
-    cdef int j, l, m, limit
-    cdef int lmax_ = lmax, mmax_ = mmax
-    cdef int lmax_out_ = lmax_out
+    cdef long j, l, m, limit
+    cdef long lmax_ = lmax, mmax_ = mmax
+    cdef long lmax_out_ = lmax_out
 
     cdef np.ndarray[double, ndim=1] powspec_
     cdef np.ndarray[np.complex128_t, ndim=1] alm1_

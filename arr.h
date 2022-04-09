@@ -1,34 +1,3 @@
-/*
- *  This file is part of libcxxsupport.
- *
- *  libcxxsupport is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  libcxxsupport is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with libcxxsupport; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
-/*
- *  libcxxsupport is being developed at the Max-Planck-Institut fuer Astrophysik
- *  and financially supported by the Deutsches Zentrum fuer Luft- und Raumfahrt
- *  (DLR).
- */
-
-/*! \file arr.h
- *  Various high-performance array classes used by the Planck LevelS package.
- *
- *  Copyright (C) 2002-2015 Max-Planck-Society
- *  \author Martin Reinecke
- */
-
 #ifndef PLANCK_ARR_H
 #define PLANCK_ARR_H
 
@@ -36,8 +5,8 @@
 #include <vector>
 #include <cstdlib>
 #include "alloc_utils.h"
-#include "datatypes.h"
 #include "math_utils.h"
+typedef std::size_t tsize;
 
 /*! \defgroup arraygroup Array classes */
 /*! \{ */
@@ -325,7 +294,7 @@ template <typename T>
   };
 
 /*! One-dimensional array type, with selectable storage alignment. */
-template <typename T, int align>
+template <typename T, long align>
   class arr_align: public arrT<T,alignAlloc__<T,align> >
   {
   public:
@@ -491,7 +460,7 @@ template <typename T>
     The storage ordering is the same as in C.
     An entry is located by address arithmetic, not by double dereferencing.
     The indices start at zero. */
-template <typename T, int align>
+template <typename T, long align>
   class arr2_align: public arr2T<T,alignAlloc__<T,align> >
   {
   public:

@@ -39,7 +39,7 @@ PlanckError::PlanckError(const char *message) : msg (message) {}
 //virtual
 PlanckError::~PlanckError() {}
 
-void planck_failure__(const char *file, int line, const char *func,
+void planck_failure__(const char *file, long line, const char *func,
   const string &msg)
   {
   cerr << "Error encountered at " << file << ", line " << line << endl;
@@ -48,7 +48,7 @@ void planck_failure__(const char *file, int line, const char *func,
   cerr << endl;
   }
 
-void planck_failure__(const char *file, int line, const char *func,
+void planck_failure__(const char *file, long line, const char *func,
   const char *msg)
   { planck_failure__ (file,line,func,string(msg)); }
 

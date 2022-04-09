@@ -36,7 +36,7 @@
 using namespace std;
 
 //static
-tsize Alm_Base::Num_Alms (int l, int m)
+tsize Alm_Base::Num_Alms (long l, long m)
   {
   planck_assert(m<=l,"mmax must not be larger than lmax");
   return ((m+1)*(m+2))/2 + (m+1)*(l-m);

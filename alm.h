@@ -42,19 +42,19 @@
 class Alm_Base
   {
   protected:
-    int lmax, mmax, tval;
+    long lmax, mmax, tval;
 
   public:
     /*! Returns the total number of coefficients for maximum quantum numbers
         \a l and \a m. */
-    static tsize Num_Alms (int l, int m);
+    static tsize Num_Alms (long l, long m);
 
     /*! Constructs an Alm_Base object with given \a lmax and \a mmax. */
-    Alm_Base (int lmax_=0, int mmax_=0)
+    Alm_Base (long lmax_=0, long mmax_=0)
       : lmax(lmax_), mmax(mmax_), tval(2*lmax+1) {}
 
     /*! Changes the object's maximum quantum numbers to \a lmax and \a mmax. */
-    void Set (int lmax_, int mmax_)
+    void Set (long lmax_, long mmax_)
       {
       lmax=lmax_;
       mmax=mmax_;
@@ -62,17 +62,17 @@ class Alm_Base
       }
 
     /*! Returns the maximum \a l */
-    int Lmax() const { return lmax; }
+    long Lmax() const { return lmax; }
     /*! Returns the maximum \a m */
-    int Mmax() const { return mmax; }
+    long Mmax() const { return mmax; }
 
     /*! Returns an array index for a given m, from which the index of a_lm
         can be obtained by adding l. */
-    int index_l0 (int m) const
+    long index_l0 (long m) const
       { return ((m*(tval-m))>>1); }
 
     /*! Returns the array index of the specified coefficient. */
-    int index (int l, int m) const
+    long index (long l, long m) const
       { return index_l0(m) + l; }
 
     /*! Returns \a true, if both objects have the same \a lmax and \a mmax,
@@ -92,12 +92,12 @@ template<typename T> class Alm: public Alm_Base
 
   public:
     /*! Constructs an Alm object with given \a lmax and \a mmax. */
-    Alm (int lmax_=0, int mmax_=0)
+    Alm (long lmax_=0, long mmax_=0)
       : Alm_Base(lmax_,mmax_), alm (Num_Alms(lmax,mmax)) {}
 
     /*! Deletes the old coefficients and allocates storage according to
         \a lmax and \a mmax. */
-    void Set (int lmax_, int mmax_)
+    void Set (long lmax_, long mmax_)
       {
       Alm_Base::Set(lmax_, mmax_);
       alm.alloc(Num_Alms(lmax,mmax));
@@ -105,7 +105,7 @@ template<typename T> class Alm: public Alm_Base
 
     /*! Deallocates the old coefficients and uses the content of \a data
         for storage. \a data is deallocated during the call. */
-    void Set (arr<T> &data, int lmax_, int mmax_)
+    void Set (arr<T> &data, long lmax_, long mmax_)
       {
       planck_assert (Num_Alms(lmax_,mmax_)==data.size(),"wrong array size");
       Alm_Base::Set(lmax_, mmax_);
@@ -124,8 +124,8 @@ template<typename T> class Alm: public Alm_Base
       {
       planck_assert(factor.size()>tsize(lmax),
         "alm.ScaleL: factor array too short");
-      for (int m=0; m<=mmax; ++m)
-        for (int l=m; l<=lmax; ++l)
+      for (long m=0; m<=mmax; ++m)
+        for (long l=m; l<=lmax; ++l)
           operator()(l,m)*=factor[l];
       }
     /*! \a a(l,m) *= \a factor[l] for all \a l,m. */
@@ -133,8 +133,8 @@ template<typename T> class Alm: public Alm_Base
       {
       planck_assert(factor.size()>tsize(lmax),
         "alm.ScaleL: factor array too short");
-      for (int m=0; m<=mmax; ++m)
-        for (int l=m; l<=lmax; ++l)
+      for (long m=0; m<=mmax; ++m)
+        for (long l=m; l<=lmax; ++l)
           operator()(l,m)*=factor[l];
       }
     /*! \a a(l,m) *= \a factor[m] for all \a l,m. */
@@ -142,8 +142,8 @@ template<typename T> class Alm: public Alm_Base
       {
       planck_assert(factor.size()>tsize(mmax),
         "alm.ScaleM: factor array too short");
-      for (int m=0; m<=mmax; ++m)
-        for (int l=m; l<=lmax; ++l)
+      for (long m=0; m<=mmax; ++m)
+        for (long l=m; l<=lmax; ++l)
           operator()(l,m)*=factor[m];
       }
     /*! Adds \a num to a_00. */
@@ -151,19 +151,19 @@ template<typename T> class Alm: public Alm_Base
       { alm[0]+=num; }
 
     /*! Returns a reference to the specified coefficient. */
-    T &operator() (int l, int m)
+    T &operator() (long l, long m)
       { return alm[index(l,m)]; }
     /*! Returns a constant reference to the specified coefficient. */
-    const T &operator() (int l, int m) const
+    const T &operator() (long l, long m) const
       { return alm[index(l,m)]; }
 
     /*! Returns a pointer for a given m, from which the address of a_lm
         can be obtained by adding l. */
-    T *mstart (int m)
+    T *mstart (long m)
       { return &alm[index_l0(m)]; }
     /*! Returns a pointer for a given m, from which the address of a_lm
         can be obtained by adding l. */
-    const T *mstart (int m) const
+    const T *mstart (long m) const
       { return &alm[index_l0(m)]; }
 
     /*! Returns a constant reference to the a_lm data. */

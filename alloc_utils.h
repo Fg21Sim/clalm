@@ -34,7 +34,8 @@
 
 #include <cstdlib>
 #include <cstddef>
-#include "datatypes.h"
+#include "error_handling.h"
+typedef std::size_t tsize;
 
 template <typename T> class normalAlloc__
   {
@@ -43,7 +44,7 @@ template <typename T> class normalAlloc__
     static void dealloc (T *ptr) { delete[] ptr; }
   };
 
-template <typename T, int align> class alignAlloc__
+template <typename T, long align> class alignAlloc__
   {
   private:
 //#if (__cplusplus>=201103L)

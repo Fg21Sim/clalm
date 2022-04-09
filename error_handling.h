@@ -41,9 +41,9 @@
 #define PLANCK_FUNC_NAME__ 0
 #endif
 
-void planck_failure__(const char *file, int line, const char *func,
+void planck_failure__(const char *file, long line, const char *func,
   const std::string &msg);
-void planck_failure__(const char *file, int line, const char *func,
+void planck_failure__(const char *file, long line, const char *func,
   const char *msg);
 void killjob__();
 

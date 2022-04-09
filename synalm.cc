@@ -63,8 +63,8 @@ getn(long s) {
 }
 
 static void 
-cholesky(int n, double *data, double *res) {
-  int i,j,k;
+cholesky(long n, double *data, double *res) {
+  long i,j,k;
   double sum;
 
   for( j=0; j<n; j++ )
@@ -98,8 +98,8 @@ cholesky(int n, double *data, double *res) {
 
 static PyObject *
 _synalm(PyObject *self, PyObject *args, PyObject *kwds) {
-  int lmax=-1, mmax=-1;
-  int ncl, nalm;
+  long lmax=-1, mmax=-1;
+  long ncl, nalm;
   const double sqrt_two = sqrt(2.);
 
   /* Take also a sequence of unit variance random vectors for the alm. */
@@ -148,7 +148,7 @@ _synalm(PyObject *self, PyObject *args, PyObject *kwds) {
   /* Get the cls objects.
      If an object is None, set the array to NULL
   */
-  for( int i=0; i<ncl; i++ )
+  for( long i=0; i<ncl; i++ )
     {
       DBGPRINTF("Get item cl %d/%d\n", i+1, ncl);
       PyObject *o;
@@ -174,7 +174,7 @@ _synalm(PyObject *self, PyObject *args, PyObject *kwds) {
       else
         cls[i] = (PyArrayObject*) o;
     }
-  for( int i=0; i<nalm; i++ )
+  for( long i=0; i<nalm; i++ )
     {
       PyObject *o;
       DBGPRINTF("Get item alm %d/%d\n", i+1, nalm);
@@ -207,7 +207,7 @@ _synalm(PyObject *self, PyObject *args, PyObject *kwds) {
 
   /* Now, I check the arrays cls and alms are 1D and complex for alms */
   DBGPRINTF("Check dimension and size of cls\n");
-  for( int i=0; i<ncl; i++ )
+  for( long i=0; i<ncl; i++ )
     {
       if( cls[i] == NULL )
         continue;
@@ -221,7 +221,7 @@ _synalm(PyObject *self, PyObject *args, PyObject *kwds) {
         }
     }
   DBGPRINTF("Check dimension and size of alms\n");
-  for( int i=0; i<nalm; i++ )
+  for( long i=0; i<nalm; i++ )
     {
       if( (alms[i]->nd != 1) || (alms[i]->descr->type != 'D') )
         {
@@ -234,9 +234,9 @@ _synalm(PyObject *self, PyObject *args, PyObject *kwds) {
   /* Now, I check that all alms have the same size and that it is compatible with
      lmax and mmax */
   DBGPRINTF("Check alms have identical size\n");
-  int szalm;
+  long szalm;
   szalm = -1;
-  for( int i=0; i<nalm; i++ )
+  for( long i=0; i<nalm; i++ )
     {
       if( i==0 )
         szalm = alms[i]->dimensions[0];
@@ -247,7 +247,7 @@ _synalm(PyObject *self, PyObject *args, PyObject *kwds) {
           goto fail;
         }
     }
-  if( szalm != int(Alm< xcomplex<double> >::Num_Alms(lmax,mmax)) )
+  if( szalm != long(Alm< xcomplex<double> >::Num_Alms(lmax,mmax)) )
     {
       PyErr_SetString(PyExc_ValueError,
                       "lmax and mmax are not compatible with size of alms.");
@@ -257,7 +257,7 @@ _synalm(PyObject *self, PyObject *args, PyObject *kwds) {
 
   /* Set the objects Alm */
   DBGPRINTF("Set alm objects\n");
-  for( int i=0; i<nalm; i++)
+  for( long i=0; i<nalm; i++)
     {
       DBGPRINTF("Setting almalms[%d]\n", i);
       arr< xcomplex<double> > * alm_arr;
@@ -273,11 +273,11 @@ _synalm(PyObject *self, PyObject *args, PyObject *kwds) {
      given by the cls[*][l]
   */
   DBGPRINTF("Start loop over l\n");
-  for( int l=0; l<=lmax; l++ )
+  for( long l=0; l<=lmax; l++ )
     {
       DBGPRINTF("l=%d\n", l);
       /* fill the matrix of cls */
-      for( int i=0; i<ncl; i++ )
+      for( long i=0; i<ncl; i++ )
         {
           if( cls[i] == NULL )
             mat[i] = 0.0;
@@ -298,11 +298,11 @@ _synalm(PyObject *self, PyObject *args, PyObject *kwds) {
       if( l == 400 )
         {
           DBGPRINTF("matrice: ");
-          for( int i=0; i<ncl; i++ )
+          for( long i=0; i<ncl; i++ )
             DBGPRINTF("%d: %lg  ", i, mat[i]);
           DBGPRINTF("\n");
           DBGPRINTF("cholesky: ");
-          for( int i=0; i<ncl; i++ )
+          for( long i=0; i<ncl; i++ )
             DBGPRINTF("%d: %lg  ", i, res[i]);
           DBGPRINTF("\n");
         }
@@ -311,12 +311,12 @@ _synalm(PyObject *self, PyObject *args, PyObject *kwds) {
 
       /* m=0 */
       DBGPRINTF("   m=%d: ", 0);
-      for( int i=nalm-1; i>=0; i-- )
+      for( long i=nalm-1; i>=0; i-- )
         {
           double x;
           x = 0.0;
           almalms[i](l,0)=xcomplex<double>(almalms[i](l,0).real(),0.0);
-          for( int j=0; j<=i; j++ )
+          for( long j=0; j<=i; j++ )
             x += res[getidx(nalm,i,j)]*almalms[j](l,0).real();
           almalms[i](l,0)=xcomplex<double>(x,0.);
           DBGPRINTF(" %lg %lg ;", almalms[i](l,0).real(), almalms[i](l,0).imag());
@@ -324,18 +324,18 @@ _synalm(PyObject *self, PyObject *args, PyObject *kwds) {
       DBGPRINTF("\n");
 
       /* m > 1 */
-      for( int m=1; m<=l; m++ )
+      for( long m=1; m<=l; m++ )
         {
           DBGPRINTF("   m=%d: ", m);
-          for( int i=nalm-1; i>=0; i-- )
+          for( long i=nalm-1; i>=0; i-- )
             {
               double xr, xi;
               xi = xr = 0.0;
-              for( int j=0; j<=i; j++ )
+              for( long j=0; j<=i; j++ )
                 {
                   xr += res[getidx(nalm,i,j)]*almalms[j](l,m).real();
                   xi += res[getidx(nalm,i,j)]*almalms[j](l,m).imag();
-                  DBGPRINTF("(res[%d]=%lg, alm=%lg,%lg) %lg %lg", (int)getidx(nalm,i,j),
+                  DBGPRINTF("(res[%d]=%lg, alm=%lg,%lg) %lg %lg", (long)getidx(nalm,i,j),
                             res[getidx(nalm,i,j)],
                             almalms[j](l,m).real(), almalms[j](l,m).imag(),
                             xr, xi);
