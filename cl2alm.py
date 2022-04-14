@@ -25,11 +25,12 @@ def getsize(lmax, mmax=None):
         mmax = lmax
     return mmax * (2 * lmax + 1 - mmax) // 2 + lmax + 1
 
-def cl2alm(cls, lmax=None, mmax=None, new=False, verbose=True):
+def cl2alm(cls, lmax=None, mmax=None):
     if lmax is None or lmax < 0:
         lmax = len(cls) - 1
     if mmax is None or mmax < 0:
         mmax = lmax
+    print(lmax)
     cls_list = [np.asarray(cls, dtype=np.float64)]
     szalm = getsize(lmax, mmax)
     alm = np.zeros(szalm, "D")

@@ -109,7 +109,7 @@ _synalm(PyObject *self, PyObject *args, PyObject *kwds) {
   PyObject *t = NULL;
   PyObject *u = NULL;
   DBGPRINTF("Parsing keyword\n");
-  if( !PyArg_ParseTupleAndKeywords(args, kwds, "OOii", (char **)kwlist,
+  if( !PyArg_ParseTupleAndKeywords(args, kwds, "OOll", (char **)kwlist,
                                    &t,
                                    &u,
                                    &lmax, &mmax) )
@@ -121,7 +121,7 @@ _synalm(PyObject *self, PyObject *args, PyObject *kwds) {
 
   ncl = PySequence_Size(t);
   nalm = getn(ncl);
-  DBGPRINTF("Sequence size: ncl=%d, nalm=%d\n", ncl, nalm);
+  DBGPRINTF("Sequence size: ncl=%ld, nalm=%ld\n", ncl, nalm);
   if( nalm<=0 || (PySequence_Size(u)!=nalm) ) {
   	std::cout << "First argument must be a sequence with "
 			  << "n(n+1)/2 elements, and second argument "
@@ -150,7 +150,7 @@ _synalm(PyObject *self, PyObject *args, PyObject *kwds) {
   */
   for( long i=0; i<ncl; i++ )
     {
-      DBGPRINTF("Get item cl %d/%d\n", i+1, ncl);
+      DBGPRINTF("Get item cl %ld/%ld\n", i+1, ncl);
       PyObject *o;
       o = PySequence_GetItem(t,i);
       /* I decrease reference counts here,
@@ -162,7 +162,7 @@ _synalm(PyObject *self, PyObject *args, PyObject *kwds) {
       if( o == Py_None )
         {
           cls[i] = NULL;
-          DBGPRINTF("Cls[%d] is None\n", i);
+          DBGPRINTF("Cls[%ld] is None\n", i);
         }
       else if( ! PyArray_Check(o) )
         {
@@ -177,7 +177,7 @@ _synalm(PyObject *self, PyObject *args, PyObject *kwds) {
   for( long i=0; i<nalm; i++ )
     {
       PyObject *o;
-      DBGPRINTF("Get item alm %d/%d\n", i+1, nalm);
+      DBGPRINTF("Get item alm %ld/%ld\n", i+1, nalm);
       o = PySequence_GetItem(u,i);
       /* I decrease reference counts here,
          because PySequence_GetItem increase
@@ -203,7 +203,7 @@ _synalm(PyObject *self, PyObject *args, PyObject *kwds) {
   if( mmax <0 || mmax >lmax )
     mmax=lmax;
 
-  DBGPRINTF("lmax=%d, mmax=%d\n", lmax, mmax);
+  DBGPRINTF("lmax=%ld, mmax=%ld\n", lmax, mmax);
 
   /* Now, I check the arrays cls and alms are 1D and complex for alms */
   DBGPRINTF("Check dimension and size of cls\n");
@@ -253,13 +253,13 @@ _synalm(PyObject *self, PyObject *args, PyObject *kwds) {
                       "lmax and mmax are not compatible with size of alms.");
       goto fail;
     }
-  DBGPRINTF("Alms have all size %d\n", szalm);
+  DBGPRINTF("Alms have all size %ld\n", szalm);
 
   /* Set the objects Alm */
   DBGPRINTF("Set alm objects\n");
   for( long i=0; i<nalm; i++)
     {
-      DBGPRINTF("Setting almalms[%d]\n", i);
+      DBGPRINTF("Setting almalms[%ld]\n", i);
       arr< xcomplex<double> > * alm_arr;
       alm_arr = new arr< xcomplex<double> >((xcomplex<double>*)alms[i]->data, szalm);
       DBGPRINTF("Set...\n");
@@ -275,7 +275,7 @@ _synalm(PyObject *self, PyObject *args, PyObject *kwds) {
   DBGPRINTF("Start loop over l\n");
   for( long l=0; l<=lmax; l++ )
     {
-      DBGPRINTF("l=%d\n", l);
+      DBGPRINTF("l=%ld\n", l);
       /* fill the matrix of cls */
       for( long i=0; i<ncl; i++ )
         {
@@ -299,11 +299,11 @@ _synalm(PyObject *self, PyObject *args, PyObject *kwds) {
         {
           DBGPRINTF("matrice: ");
           for( long i=0; i<ncl; i++ )
-            DBGPRINTF("%d: %lg  ", i, mat[i]);
+            DBGPRINTF("%ld: %lg  ", i, mat[i]);
           DBGPRINTF("\n");
           DBGPRINTF("cholesky: ");
           for( long i=0; i<ncl; i++ )
-            DBGPRINTF("%d: %lg  ", i, res[i]);
+            DBGPRINTF("%ld: %lg  ", i, res[i]);
           DBGPRINTF("\n");
         }
 
@@ -326,7 +326,7 @@ _synalm(PyObject *self, PyObject *args, PyObject *kwds) {
       /* m > 1 */
       for( long m=1; m<=l; m++ )
         {
-          DBGPRINTF("   m=%d: ", m);
+          DBGPRINTF("   m=%ld: ", m);
           for( long i=nalm-1; i>=0; i-- )
             {
               double xr, xi;
@@ -335,13 +335,13 @@ _synalm(PyObject *self, PyObject *args, PyObject *kwds) {
                 {
                   xr += res[getidx(nalm,i,j)]*almalms[j](l,m).real();
                   xi += res[getidx(nalm,i,j)]*almalms[j](l,m).imag();
-                  DBGPRINTF("(res[%d]=%lg, alm=%lg,%lg) %lg %lg", (long)getidx(nalm,i,j),
+                  DBGPRINTF("(res[%ld]=%lg, alm=%lg,%lg) %lg %lg", (long)getidx(nalm,i,j),
                             res[getidx(nalm,i,j)],
                             almalms[j](l,m).real(), almalms[j](l,m).imag(),
                             xr, xi);
                 }
               almalms[i](l,m)=xcomplex<double>(xr/sqrt_two,xi/sqrt_two);
-              DBGPRINTF(" xre,xim[%d]: %lg %lg ;", i,
+              DBGPRINTF(" xre,xim[%ld]: %lg %lg ;", i,
                         almalms[i](l,m).real(), almalms[i](l,m).imag());
             }
           DBGPRINTF("\n");
