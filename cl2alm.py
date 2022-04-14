@@ -30,7 +30,6 @@ def cl2alm(cls, lmax=None, mmax=None):
         lmax = len(cls) - 1
     if mmax is None or mmax < 0:
         mmax = lmax
-    print(lmax)
     cls_list = [np.asarray(cls, dtype=np.float64)]
     szalm = getsize(lmax, mmax)
     alm = np.zeros(szalm, "D")
